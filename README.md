@@ -9,13 +9,13 @@
 - [x] Ingress für den Zugriff auf das Frontend vorhanden und erreichbar
 
 ## Aufgabe 2
-- [ ] Helm Chart erstellt, Kubernetes Manifests templatisiert
-- [ ] Sämtliche Konfigurationswerte werden zentral über die values.yaml verwaltet, kein Hardcodings
-- [ ] Wiederverwendbare Template Funktionen werden mittels _helpers.tpl definiert 
-- [ ] Das Chart lässt sich mittels helm lint ohne Fehler validieren
+- [x] Helm Chart erstellt, Kubernetes Manifests templatisiert
+- [x] Sämtliche Konfigurationswerte werden zentral über die values.yaml verwaltet, kein Hardcodings
+- [x] Wiederverwendbare Template Funktionen werden mittels _helpers.tpl definiert 
+- [x] Das Chart lässt sich mittels helm lint ohne Fehler validieren
 
 ## Aufgabe 3
-- [ ] Auf GitHub ist ein Ops Repository angelegt, welches den Helm Chart sowie das ArgodCD Application Manifest enthält
+- [x] Auf GitHub ist ein Ops Repository angelegt, welches den Helm Chart sowie das ArgodCD Application Manifest enthält
 - [ ] ArgoCD ist im Kubernetes Cluster in einem dedizierten Namespace installiert und konfiguriert
 - [ ] Das Deployment des Helm Charts erfolgt in einen eigenen, von ArgoCD getrennten Namespace
 - [ ] Änderungen am values.yaml oder am Helm Chart im Ops Repository werden von ArgoCD erkannt und in den Cluster übernommen
