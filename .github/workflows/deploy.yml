@@ -1,137 +1,76 @@
-name: Deploy
+name: Build & Promote (GitOps)
 
-# Trigger: run automatically on every push to main (acceptance criterion #2).
 on:
   push:
     branches: [main]
-
-# Avoid two deploys racing each other if pushes land close together.
-concurrency:
-  group: deploy-production
-  cancel-in-progress: false
+  workflow_dispatch:
 
 env:
-  REGISTRY: ghcr.io
-  BACKEND_IMAGE: ghcr.io/0x800f081f/user_mgmt_service-backend
-  FRONTEND_IMAGE: ghcr.io/0x800f081f/user_mgmt_service-frontend
+  BACKEND_IMAGE:  ghcr.io/${{ github.repository_owner }}/user_mgmt_service-backend
+  FRONTEND_IMAGE: ghcr.io/${{ github.repository_owner }}/user_mgmt_service-frontend
+  OPS_REPO:       0x800f081f/vsc-ops
+  VALUES_PATH:    k8s_helm/values.yaml
 
 jobs:
-  build-and-push:
+  build-and-promote:
     runs-on: ubuntu-latest
-    # Needed to push images to GitHub Container Registry (GHCR).
     permissions:
       contents: read
       packages: write
     steps:
-      - name: Checkout
+      - name: Checkout app repo
         uses: actions/checkout@v4
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+      - name: Kurzer Commit-Hash als Image-Tag
+        id: vars
+        run: echo "tag=${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
 
-      - name: Log in to GHCR
+      - name: Login GHCR
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build & push backend image
+      - name: Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build & Push Backend
         uses: docker/build-push-action@v6
         with:
           context: .
           file: ./Dockerfile
           push: true
           tags: |
+            ${{ env.BACKEND_IMAGE }}:${{ steps.vars.outputs.tag }}
             ${{ env.BACKEND_IMAGE }}:latest
-            ${{ env.BACKEND_IMAGE }}:${{ github.sha }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
 
-      - name: Build & push frontend image
+      - name: Build & Push Frontend
         uses: docker/build-push-action@v6
         with:
           context: ./src-ui
           file: ./src-ui/Dockerfile
           push: true
-          # NEXT_PUBLIC_API_URL is inlined into the client bundle at build
-          # time by Next.js, so it must be supplied here as a build-arg.
           build-args: |
-            NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }}
+            NEXT_PUBLIC_API_URL=http://backend:8080
           tags: |
+            ${{ env.FRONTEND_IMAGE }}:${{ steps.vars.outputs.tag }}
             ${{ env.FRONTEND_IMAGE }}:latest
-            ${{ env.FRONTEND_IMAGE }}:${{ github.sha }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
 
-  deploy:
-    needs: build-and-push
-    runs-on: ubuntu-latest
-    # Needed so the deploy step can hand the server a token that is allowed
-    # to pull the images just pushed above.
-    permissions:
-      packages: read
-    steps:
-      - name: Deploy to EC2 via SSH
-        uses: appleboy/ssh-action@v1
-        # These become the shell env vars available inside `script:` below,
-        # via the `envs:` list. Each value comes from a GitHub Secret — never
-        # from the repo — so nothing secret is ever written to git.
+      - name: Promotion - neuen Tag ins Ops-Repo committen
         env:
-          SPRING_DATASOURCE_URL: ${{ secrets.SPRING_DATASOURCE_URL }}
-          SPRING_DATASOURCE_USERNAME: ${{ secrets.SPRING_DATASOURCE_USERNAME }}
-          SPRING_DATASOURCE_PASSWORD: ${{ secrets.SPRING_DATASOURCE_PASSWORD }}
-          SPRING_JPA_HIBERNATE_DDL_AUTO: ${{ secrets.SPRING_JPA_HIBERNATE_DDL_AUTO }}
-          JWT_ISSUER: ${{ secrets.JWT_ISSUER }}
-          JWT_SECRET: ${{ secrets.JWT_SECRET }}
-          JWT_EXPIRATION_MILLIS: ${{ secrets.JWT_EXPIRATION_MILLIS }}
-          TRAEFIK_EMAIL: ${{ secrets.TRAEFIK_EMAIL }}
-          NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
-          # GHCR login on the server: GITHUB_TOKEN is scoped to this repo
-          # and only needs read access here, since the images were already
-          # pushed by the build-and-push job above.
-          GHCR_USER: ${{ github.actor }}
-          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_SSH_USER }}
-          key: ${{ secrets.EC2_SSH_KEY }}
-          # t3.small + an on-server Gradle build can take a while — give it
-          # more room than the action's 10m default before giving up.
-          command_timeout: 20m
-          envs: SPRING_DATASOURCE_URL,SPRING_DATASOURCE_USERNAME,SPRING_DATASOURCE_PASSWORD,SPRING_JPA_HIBERNATE_DDL_AUTO,JWT_ISSUER,JWT_SECRET,JWT_EXPIRATION_MILLIS,TRAEFIK_EMAIL,NEXT_PUBLIC_API_URL,GHCR_USER,GHCR_TOKEN
-          script: |
-            set -e
-            cd ~/user_mgmt_service
-
-            # Pull the latest fixed docker-compose.yml / source before rebuilding.
-            git pull origin main
-
-            # Regenerate .env from the secrets passed in above. This file never
-            # lives in git — it's recreated fresh on the server on every deploy.
-            cat > .env <<ENVEOF
-            SPRING_DATASOURCE_URL=$SPRING_DATASOURCE_URL
-            SPRING_DATASOURCE_USERNAME=$SPRING_DATASOURCE_USERNAME
-            SPRING_DATASOURCE_PASSWORD=$SPRING_DATASOURCE_PASSWORD
-            SPRING_JPA_HIBERNATE_DDL_AUTO=$SPRING_JPA_HIBERNATE_DDL_AUTO
-            JWT_ISSUER=$JWT_ISSUER
-            JWT_SECRET=$JWT_SECRET
-            JWT_EXPIRATION_MILLIS=$JWT_EXPIRATION_MILLIS
-            TRAEFIK_EMAIL=$TRAEFIK_EMAIL
-            NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
-            ENVEOF
-            chmod 600 .env
-
-            # Log in to GHCR so `docker compose pull` can fetch the images
-            # that build-and-push just published (needed as long as the
-            # packages are private; harmless no-op once/if they're public).
-            echo "$GHCR_TOKEN" | docker login ghcr.io -u "$GHCR_USER" --password-stdin
-
-            # Pull the images built in CI instead of building on the server,
-            # then (re)start the stack with the new images + config.
-            docker compose pull
-            docker compose up -d
-
-            # Drop any dangling images left over from the previous deploy so
-            # the small root disk doesn't fill up over time.
-            docker image prune -f
+          GH_TOKEN: ${{ secrets.OPS_REPO_TOKEN }}
+          TAG: ${{ steps.vars.outputs.tag }}
+        run: |
+          set -e
+          sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
+          sudo chmod +x /usr/local/bin/yq
+          git clone "https://x-access-token:${GH_TOKEN}@github.com/${OPS_REPO}.git" ops
+          cd ops
+          yq -i ".images.backend.tag  = \"${TAG}\"" "${VALUES_PATH}"
+          yq -i ".images.frontend.tag = \"${TAG}\"" "${VALUES_PATH}"
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add "${VALUES_PATH}"
+          git commit -m "promote: images -> ${TAG}" || echo "keine Aenderung"
+          git push
