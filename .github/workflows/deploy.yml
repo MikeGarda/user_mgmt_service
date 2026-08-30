@@ -6,9 +6,9 @@ on:
   workflow_dispatch:
 
 env:
-  BACKEND_IMAGE:  ghcr.io/${{ github.repository_owner }}/user_mgmt_service-backend
-  FRONTEND_IMAGE: ghcr.io/${{ github.repository_owner }}/user_mgmt_service-frontend
-  OPS_REPO:       0x800f081f/vsc-ops
+  BACKEND_IMAGE:  ghcr.io/mikegarda/user_mgmt_service-backend
+  FRONTEND_IMAGE: ghcr.io/mikegarda/user_mgmt_service-frontend
+  OPS_REPO:       MikeGarda/vsc-ops
   VALUES_PATH:    k8s_helm/values.yaml
 
 jobs:
