@@ -16,18 +16,18 @@
 
 ## Aufgabe 3
 - [x] Auf GitHub ist ein Ops Repository angelegt, welches den Helm Chart sowie das ArgodCD Application Manifest enthält
-- [ ] ArgoCD ist im Kubernetes Cluster in einem dedizierten Namespace installiert und konfiguriert
-- [ ] Das Deployment des Helm Charts erfolgt in einen eigenen, von ArgoCD getrennten Namespace
-- [ ] Änderungen am values.yaml oder am Helm Chart im Ops Repository werden von ArgoCD erkannt und in den Cluster übernommen
-- [ ] Das Argo CD Dashboard ist zugänglich
+- [x] ArgoCD ist im Kubernetes Cluster in einem dedizierten Namespace installiert und konfiguriert
+- [x] Das Deployment des Helm Charts erfolgt in einen eigenen, von ArgoCD getrennten Namespace
+- [x] Änderungen am values.yaml oder am Helm Chart im Ops Repository werden von ArgoCD erkannt und in den Cluster übernommen
+- [x] Das Argo CD Dashboard ist zugänglich
 
 ## Aufgabe 4
-- [ ] Die Pipeline wird bei einem Push auf den main Branch des Applikations Repositories initiiert
-- [ ] Das Docker Image wird fehlerfrei gebaut und mit einem eindeutigen, dynamischen Tag (z. B. Git-Commit-Hash) versioniert
-- [ ] Das versionierte Image wird erfolgreich in eine für den Kubernetes Cluster autorisierte Container Registry publiziert
-- [ ] Die Pipeline führt einen automatisierten Commit auf das Ops Repository aus, welcher den Image Tag in der values.yaml des Helm Charts aktualisiert (sog. Promotion)
-- [ ] Sämtliche imperativen Deployment Schritte (bspw. ssh und docker compose) sind aus der Pipeline entfernt
-- [ ] Alle benötigten Secrets werden über GitHub Secrets verwaltet
+- [x] Die Pipeline wird bei einem Push auf den main Branch des Applikations Repositories initiiert
+- [x] Das Docker Image wird fehlerfrei gebaut und mit einem eindeutigen, dynamischen Tag (z. B. Git-Commit-Hash) versioniert
+- [x] Das versionierte Image wird erfolgreich in eine für den Kubernetes Cluster autorisierte Container Registry publiziert
+- [x] Die Pipeline führt einen automatisierten Commit auf das Ops Repository aus, welcher den Image Tag in der values.yaml des Helm Charts aktualisiert (sog. Promotion)
+- [x] Sämtliche imperativen Deployment Schritte (bspw. ssh und docker compose) sind aus der Pipeline entfernt
+- [x] Alle benötigten Secrets werden über GitHub Secrets verwaltet
 
 ## Aufgabe 5
 - [ ] Der Helm Chart ist umgebungsspezifisch via separater values-staging.yaml und values-prod.yaml parametrisierbar 
