@@ -30,10 +30,10 @@
 - [x] Alle benötigten Secrets werden über GitHub Secrets verwaltet
 
 ## Aufgabe 5
-- [ ] Der Helm Chart ist umgebungsspezifisch via separater values-staging.yaml und values-prod.yaml parametrisierbar 
-- [ ] ArgoCD verwaltet zwei eigenständige Application Manifests, welche den Helm Chart automatisiert in separate Namespaces deployen
-- [ ] Für jeden Namespace sind maximale Ressourcenlimits (CPU und Memory) mittels ResourceQuota verbindlich definiert 
-- [ ] Die netzwerktechnische Isolation zwischen den Namespaces ist durch NetworkPolicies sichergestellt
+- [x] Der Helm Chart ist umgebungsspezifisch via separater values-staging.yaml und values-prod.yaml parametrisierbar 
+- [x] ArgoCD verwaltet zwei eigenständige Application Manifests, welche den Helm Chart automatisiert in separate Namespaces deployen
+- [x] Für jeden Namespace sind maximale Ressourcenlimits (CPU und Memory) mittels ResourceQuota verbindlich definiert 
+- [x] Die netzwerktechnische Isolation zwischen den Namespaces ist durch NetworkPolicies sichergestellt
 
 
 ## Aufgabe 6
