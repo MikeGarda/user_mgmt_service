@@ -37,9 +37,9 @@
 
 
 ## Aufgabe 6
-- [ ] Ein Horizontal Pod Autoscaler (HPA) skaliert die Backend Replicas dynamisch anhand definierter Schwellenwerte
-- [ ] Für sämtliche Pods sind requests und limits verbindlich deklariert, um die Funktion des HPA sicherzustellen und Ressourcen Konflikte auf dem Node zu vermeiden
-- [ ] Konfigurierte livenessProbe und readinessProbe stellen sicher, dass Traffic nur an bereite Instanzen geroutet und fehlerhafte Pods terminiert werden
-- [ ] Der Ingress Controller verteilt den externen Traffic dynamisch mittels internem Round Robin Load Balancing ausschliesslich auf alle als "ready" validierten Pod Replicas
-- [ ] Es ist eine RollingUpdate Strategie definiert, um Service Unterbrüche bei Aktualisierungen auszuschliessen
-- [ ] Ein Pod Disruption Budget (PDB) ist definiert, um bei Wartungsvorgängen oder Re-Schedulings auf dem Node eine minimale Anzahl aktiver Replikate sicherzustellen
+- [x] Ein Horizontal Pod Autoscaler (HPA) skaliert die Backend Replicas dynamisch anhand definierter Schwellenwerte
+- [x] Für sämtliche Pods sind requests und limits verbindlich deklariert, um die Funktion des HPA sicherzustellen und Ressourcen Konflikte auf dem Node zu vermeiden
+- [x] Konfigurierte livenessProbe und readinessProbe stellen sicher, dass Traffic nur an bereite Instanzen geroutet und fehlerhafte Pods terminiert werden
+- [x] Der Ingress Controller verteilt den externen Traffic dynamisch mittels internem Round Robin Load Balancing ausschliesslich auf alle als "ready" validierten Pod Replicas
+- [x] Es ist eine RollingUpdate Strategie definiert, um Service Unterbrüche bei Aktualisierungen auszuschliessen
+- [x] Ein Pod Disruption Budget (PDB) ist definiert, um bei Wartungsvorgängen oder Re-Schedulings auf dem Node eine minimale Anzahl aktiver Replikate sicherzustellen
