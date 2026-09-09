@@ -1,45 +1,47 @@
 # TODO
 ## Aufgabe 1
-- [x] Die Docker Images sind in einer für den Kubernetes Cluster zugänglichen Container Registry gespeichert
-- [x] Service sowie Deployment für Next Frontend, Spring Boot Backend und PostgreSQL Datenbank vorhanden
-- [x] ConfigMap für die nicht sensitive Konfiguration vorhanden 
-- [x] Secret für die sensitive Konfiguration vorhanden 
-- [x] Die Datenbank verwendet eine persistente Speicherung mittels PersistentVolumeClaim 
-- [x] Backend kommuniziert ausschliesslich über den Kubernetes Service mit der Datenbank
-- [x] Ingress für den Zugriff auf das Frontend vorhanden und erreichbar
+- [ ] gekube-prometheus-stack ist mittels Helm in einem dedizierten Namespace namens monitoring installiert
+- [ ] Für Kubernetes werden mindestens CPU- und Memory Auslastung pro Pod durch Prometheus überwacht
+- [ ] Der Spring Boot user_mgmt_service stellt kompatible Applikationsmetriken bereit. Mittels ServiceMonitor werden mindestens Request Rate, Response Time und Error Rate durch Prometheus erfasst
+- [ ] In Grafana sind zwei passende Dashboards zur Visualisierung der Telemetriedaten vorhanden
+- [ ] Für den user_mgmt_service ist eine eigene PrometheusRule definiert, welche einen fachlich sinnvollen Fehlerzustand erkennt. Der ausgelöste Alert wird über Alertmanager an einen konfigurierten Benachrichtigungskanal weitergeleitet
+- [ ] Die Konfiguration des Monitoring Stacks erfolgt deklarativ über eine eigene values.yaml und befindet sich im Ops Repository
 
 ## Aufgabe 2
-- [x] Helm Chart erstellt, Kubernetes Manifests templatisiert
-- [x] Sämtliche Konfigurationswerte werden zentral über die values.yaml verwaltet, kein Hardcodings
-- [x] Wiederverwendbare Template Funktionen werden mittels _helpers.tpl definiert 
-- [x] Das Chart lässt sich mittels helm lint ohne Fehler validieren
+- [ ] k6 ist im Kubernetes Cluster ausführbar und es ist mindestens 1 Testskript für den user_mgmt_service vorhanden
+- [ ] Das Testskript erzeugt kontrolliert steigende Last auf mindestens einen relevanten API Endpoint
+- [ ] Während des Lasttests werden die aufgezeichneten Telemetriedaten erfasst und die Auswirkungen sind in Prometheus resp. Grafana nachvollziehbar dargestellt
+- [ ] Es wird überprüft, ob der konfigurierte HPA bei steigender Last zusätzliche Service Replicas erzeugt und nach Reduktion der Last die Anzahl wieder reduziert
+- [ ] Während des Skalierungsvorgangs bleibt der user_mgmt_service verfügbar und eingehende Requests werden via vordefinierter Strategie auf die verfügbaren Replicas verteilt
 
 ## Aufgabe 3
-- [x] Auf GitHub ist ein Ops Repository angelegt, welches den Helm Chart sowie das ArgodCD Application Manifest enthält
-- [x] ArgoCD ist im Kubernetes Cluster in einem dedizierten Namespace installiert und konfiguriert
-- [x] Das Deployment des Helm Charts erfolgt in einen eigenen, von ArgoCD getrennten Namespace
-- [x] Änderungen am values.yaml oder am Helm Chart im Ops Repository werden von ArgoCD erkannt und in den Cluster übernommen
-- [x] Das Argo CD Dashboard ist zugänglich
+- [ ] Der DigitalOcean Provider ist in Terraform konfiguriert
+- [ ] Der bestehende Kubernetes Cluster wird via Terraform import Blocks referenziert und mittels terraform plan -generate-config-out=generated.tf aus der bestehenden Infrastruktur generiert
+- [ ] Die automatisch erzeugte generated.tf ist analysiert und bereinigt
+- [ ] Wiederverwendbare Konfigurationswerte werden über Terraform Variablen parametrisiert
+- [ ] Sensible Werte, insbesondere der DigitalOcean API Token, befinden sich nicht im Repository
+- [ ] Terraform fmt und terraform validate laufen fehlerfrei und terraform plan zeigt für den bestehenden Cluster keine unbeabsichtigten Infrastrukturänderungen
 
 ## Aufgabe 4
-- [x] Die Pipeline wird bei einem Push auf den main Branch des Applikations Repositories initiiert
-- [x] Das Docker Image wird fehlerfrei gebaut und mit einem eindeutigen, dynamischen Tag (z. B. Git-Commit-Hash) versioniert
-- [x] Das versionierte Image wird erfolgreich in eine für den Kubernetes Cluster autorisierte Container Registry publiziert
-- [x] Die Pipeline führt einen automatisierten Commit auf das Ops Repository aus, welcher den Image Tag in der values.yaml des Helm Charts aktualisiert (sog. Promotion)
-- [x] Sämtliche imperativen Deployment Schritte (bspw. ssh und docker compose) sind aus der Pipeline entfernt
-- [x] Alle benötigten Secrets werden über GitHub Secrets verwaltet
+- [ ] Die bisher im Kubernetes Cluster betriebene PostgreSQL Datenbank wird durch eine DigitalOcean Managed PostgreSQL Database ersetzt
+- [ ] Der user_mgmt_service verbindet sich ausschliesslich über die bereitgestellten Verbindungsdaten mit der Managed Database
+- [ ] Zugangsdaten zur Datenbank werden weiterhin über ein Kubernetes Secret bereitgestellt und nicht hardcodiert
+- [ ] Der bisherige PostgreSQL Pod, Service und PersistentVolumeClaim werden aus dem Deployment entfernt
+- [ ] Die Managed PostgreSQL Datenbank wird mittels Terraform definiert und via Digital Ocean Provider provisioniert
 
 ## Aufgabe 5
-- [x] Der Helm Chart ist umgebungsspezifisch via separater values-staging.yaml und values-prod.yaml parametrisierbar 
-- [x] ArgoCD verwaltet zwei eigenständige Application Manifests, welche den Helm Chart automatisiert in separate Namespaces deployen
-- [x] Für jeden Namespace sind maximale Ressourcenlimits (CPU und Memory) mittels ResourceQuota verbindlich definiert 
-- [x] Die netzwerktechnische Isolation zwischen den Namespaces ist durch NetworkPolicies sichergestellt
-
+- [ ] Kyverno ist mittels Helm in einem dedizierten Namespace namens policy installiert
+- [ ] Es sind mindestens 3 passende ClusterPolicies implementiert
+- [ ] Ein Deployment, welches gegen eine der Policies verstösst, wird von Kyverno abgelehnt. Mittels eines absichtlich ungültigen Kubernetes Manifests wird nachgewiesen, dass das Policy Enforcement funktioniert
+- [ ] Die ClusterPolicies befinden sich deklarativ im Ops Repository
 
 ## Aufgabe 6
-- [x] Ein Horizontal Pod Autoscaler (HPA) skaliert die Backend Replicas dynamisch anhand definierter Schwellenwerte
-- [x] Für sämtliche Pods sind requests und limits verbindlich deklariert, um die Funktion des HPA sicherzustellen und Ressourcen Konflikte auf dem Node zu vermeiden
-- [x] Konfigurierte livenessProbe und readinessProbe stellen sicher, dass Traffic nur an bereite Instanzen geroutet und fehlerhafte Pods terminiert werden
-- [x] Der Ingress Controller verteilt den externen Traffic dynamisch mittels internem Round Robin Load Balancing ausschliesslich auf alle als "ready" validierten Pod Replicas
-- [x] Es ist eine RollingUpdate Strategie definiert, um Service Unterbrüche bei Aktualisierungen auszuschliessen
-- [x] Ein Pod Disruption Budget (PDB) ist definiert, um bei Wartungsvorgängen oder Re-Schedulings auf dem Node eine minimale Anzahl aktiver Replikate sicherzustellen
+- [ ] Der user_mgmt_service stellt einen neuen Endpoint zur Verfügung, über welchen einem User ein Module zugewiesen werden kann
+- [ ] Vor der Zuweisung prüft der user_mgmt_service über die API des module_service, ob das angegebene Module verfügbar ist
+- [ ] Die Kommunikation zwischen dem user_mgmt_service und dem module_service erfolgt synchron via REST Client über den jeweiligen Kubernetes Service und wird durch Timeout, Retry und Circuit Breaker gegen temporäre Ausfälle abgesichert
+- [ ] Der user_mgmt_service hat keinen direkten Zugriff auf die seitens Digital Ocean verwaltete MySQL Datenbank
+- [ ] Die vollständige End-to-End-Kommunikation vom Client über den user_mgmt_service bis zum module_service funktioniert fehlerfrei. Erfolgreiche sowie fehlerhafte Modulzuweisungen werden korrekt verarbeitet und mit geeigneten HTTP Statuscodes beantwortet
+- [ ] Die seitens module_service exponierten Telemetriedaten werden mittels ServiceMonitor durch Prometheus erfasst und in einem zusätzlichen Grafana Dashboard visualisiert. Das Dashboard zeigt mindestens Request Rate, Response Time und Error Rate
+- [ ] Für den module_service sind CPU- und Memory Limits so dimensioniert, dass die Anwendung unter Last stabil betrieben werden kann (vertikale Skalierung)
+- [ ] Der module_service erfüllt die bestehenden ClusterPolicies
+- [ ] Das Deployment erfolgt über den bestehenden GitOps Prozess. Die existierende Pipeline wird erweitert, sodass auch das Image es module_service automatisch gebaut, versioniert und publiziert wird
