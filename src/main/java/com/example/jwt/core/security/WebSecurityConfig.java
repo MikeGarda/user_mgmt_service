@@ -46,6 +46,9 @@ public class WebSecurityConfig {
         .authorizeHttpRequests(requests -> requests
             .requestMatchers(HttpMethod.POST, "/users/login").permitAll()
             .requestMatchers(HttpMethod.POST, "/users/register").permitAll()
+            // Orchestrierung & Observability / Aufgabe 1: Prometheus scrapt /actuator/prometheus ohne Login;
+            // Health-Checks für Kubernetes-Probes bleiben ebenfalls offen.
+            .requestMatchers("/actuator/prometheus", "/actuator/health/**").permitAll()
             .anyRequest().authenticated())
         .addFilterAfter(
             new CustomAuthenticationFilter(loginPostMatcher, authenticationManager(), jwtProperties),

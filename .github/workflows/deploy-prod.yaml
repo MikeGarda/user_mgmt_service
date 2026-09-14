@@ -1,0 +1,116 @@
+name: Deploy Prod (GitOps)
+
+# ============================================================
+# Production-Pipeline: Branch "main" -> Umgebung "production".
+#
+# Freigabe-Logik: Ein Release wird zuerst ueber den Branch "release"
+# nach Staging deployed (deploy-staging.yaml) und dort verifiziert.
+# Der Merge von "release" nach "main" ist die eigentliche Freigabe
+# und loest diese Pipeline aus.
+#
+# GitOps-Ablauf:
+#   1) Backend- & Frontend-Image bauen und nach GHCR pushen.
+#      Als Tag wird der kurze Commit-SHA verwendet (unveraenderlich).
+#      Bewusst KEIN "latest"-Tag, da sich die beiden Branch-Pipelines
+#      sonst gegenseitig ueberschreiben wuerden.
+#   2) Promotion: Der neue Tag wird per Commit in das Ops-Repo
+#      (MikeGarda/vsc-ops) geschrieben (k8s_helm/values-prod.yaml).
+#      ArgoCD erkennt die Aenderung auf Branch "main" und rollt das
+#      neue Image automatisch in den Namespace user-mgmt-prod aus.
+#
+# Vorbereitung fuer kommende Aufgaben:
+#   - Aufgabe 2 (k6-Lasttest):    Laeuft vor der Prod-Freigabe gegen Staging
+#                                 (Job-Slot in deploy-staging.yaml).
+#   - Aufgabe 6 (module_service): Build-Step + Promotion-Zeile vorbereitet.
+# ============================================================
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-prod
+  cancel-in-progress: false
+
+env:
+  ENVIRONMENT:    production
+  BACKEND_IMAGE:  ghcr.io/mikegarda/user_mgmt_service-backend
+  FRONTEND_IMAGE: ghcr.io/mikegarda/user_mgmt_service-frontend
+  # Aufgabe 6: zusaetzliches Image des module_service
+  # MODULE_IMAGE: ghcr.io/mikegarda/module_service
+  OPS_REPO:       MikeGarda/vsc-ops
+  OPS_BRANCH:     main
+  VALUES_PATH:    k8s_helm/values-prod.yaml
+
+jobs:
+  build-and-promote:
+    runs-on: ubuntu-latest
+    environment: production
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout app repo
+        uses: actions/checkout@v4
+
+      - name: Kurzer Commit-Hash als Image-Tag
+        id: vars
+        run: echo "tag=${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
+
+      - name: Login GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build & Push Backend
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ${{ env.BACKEND_IMAGE }}:${{ steps.vars.outputs.tag }}
+
+      - name: Build & Push Frontend
+        uses: docker/build-push-action@v6
+        with:
+          context: ./src-ui
+          file: ./src-ui/Dockerfile
+          push: true
+          build-args: |
+            NEXT_PUBLIC_API_URL=http://backend:8080
+          tags: ${{ env.FRONTEND_IMAGE }}:${{ steps.vars.outputs.tag }}
+
+      # --- Aufgabe 6: module_service (vorbereitet) ---
+      # - name: Build & Push module_service
+      #   uses: docker/build-push-action@v6
+      #   with:
+      #     context: ./module_service
+      #     file: ./module_service/Dockerfile
+      #     push: true
+      #     tags: ${{ env.MODULE_IMAGE }}:${{ steps.vars.outputs.tag }}
+
+      - name: Promotion - neuen Tag ins Ops-Repo committen
+        env:
+          GH_TOKEN: ${{ secrets.OPS_REPO_TOKEN }}
+          TAG: ${{ steps.vars.outputs.tag }}
+        run: |
+          set -e
+          sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
+          sudo chmod +x /usr/local/bin/yq
+          git clone --depth 1 --branch "${OPS_BRANCH}" "https://x-access-token:${GH_TOKEN}@github.com/${OPS_REPO}.git" ops
+          cd ops
+          yq -i ".images.backend.tag  = \"${TAG}\"" "${VALUES_PATH}"
+          yq -i ".images.frontend.tag = \"${TAG}\"" "${VALUES_PATH}"
+          # Aufgabe 6: zusaetzlich den Tag des module_service promoten
+          # yq -i ".images.module.tag = \"${TAG}\"" "${VALUES_PATH}"
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add "${VALUES_PATH}"
+          git commit -m "promote(${ENVIRONMENT}): images -> ${TAG}" || echo "keine Aenderung"
+          git push

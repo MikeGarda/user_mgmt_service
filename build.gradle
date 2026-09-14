@@ -21,6 +21,10 @@ dependencies {
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: '4.1.0-M3'
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '4.1.0-M3'
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-validation', version: '4.1.0-M3'
+    // Orchestrierung & Observability / Aufgabe 1: Metriken fuer Prometheus (Actuator + Micrometer)
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-actuator', version: '4.1.0-M3'
+    // Version wird ueber die Spring-Boot-BOM (dependency-management-Plugin) verwaltet.
+    implementation 'io.micrometer:micrometer-registry-prometheus'
     implementation group: 'org.postgresql', name: 'postgresql', version: '42.7.10'
     implementation group: 'commons-validator', name: 'commons-validator', version: '1.10.1'
     implementation group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.13.0'
