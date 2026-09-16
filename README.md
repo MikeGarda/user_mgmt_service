@@ -1,11 +1,11 @@
 # TODO
 ## Aufgabe 1
-- [ ] gekube-prometheus-stack ist mittels Helm in einem dedizierten Namespace namens monitoring installiert
-- [ ] Für Kubernetes werden mindestens CPU- und Memory Auslastung pro Pod durch Prometheus überwacht
-- [ ] Der Spring Boot user_mgmt_service stellt kompatible Applikationsmetriken bereit. Mittels ServiceMonitor werden mindestens Request Rate, Response Time und Error Rate durch Prometheus erfasst
-- [ ] In Grafana sind zwei passende Dashboards zur Visualisierung der Telemetriedaten vorhanden
-- [ ] Für den user_mgmt_service ist eine eigene PrometheusRule definiert, welche einen fachlich sinnvollen Fehlerzustand erkennt. Der ausgelöste Alert wird über Alertmanager an einen konfigurierten Benachrichtigungskanal weitergeleitet
-- [ ] Die Konfiguration des Monitoring Stacks erfolgt deklarativ über eine eigene values.yaml und befindet sich im Ops Repository
+- [x] gekube-prometheus-stack ist mittels Helm in einem dedizierten Namespace namens monitoring installiert
+- [x] Für Kubernetes werden mindestens CPU- und Memory Auslastung pro Pod durch Prometheus überwacht
+- [x] Der Spring Boot user_mgmt_service stellt kompatible Applikationsmetriken bereit. Mittels ServiceMonitor werden mindestens Request Rate, Response Time und Error Rate durch Prometheus erfasst
+- [x] In Grafana sind zwei passende Dashboards zur Visualisierung der Telemetriedaten vorhanden
+- [x] Für den user_mgmt_service ist eine eigene PrometheusRule definiert, welche einen fachlich sinnvollen Fehlerzustand erkennt. Der ausgelöste Alert wird über Alertmanager an einen konfigurierten Benachrichtigungskanal weitergeleitet
+- [x] Die Konfiguration des Monitoring Stacks erfolgt deklarativ über eine eigene values.yaml und befindet sich im Ops Repository
 
 ## Aufgabe 2
 - [ ] k6 ist im Kubernetes Cluster ausführbar und es ist mindestens 1 Testskript für den user_mgmt_service vorhanden
