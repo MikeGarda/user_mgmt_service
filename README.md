@@ -4,15 +4,15 @@
 - [x] Für Kubernetes werden mindestens CPU- und Memory Auslastung pro Pod durch Prometheus überwacht
 - [x] Der Spring Boot user_mgmt_service stellt kompatible Applikationsmetriken bereit. Mittels ServiceMonitor werden mindestens Request Rate, Response Time und Error Rate durch Prometheus erfasst
 - [x] In Grafana sind zwei passende Dashboards zur Visualisierung der Telemetriedaten vorhanden
-- [x] Für den user_mgmt_service ist eine eigene PrometheusRule definiert, welche einen fachlich sinnvollen Fehlerzustand erkennt. Der ausgelöste Alert wird über Alertmanager an einen konfigurierten Benachrichtigungskanal weitergeleitet
-- [x] Die Konfiguration des Monitoring Stacks erfolgt deklarativ über eine eigene values.yaml und befindet sich im Ops Repository
+- [ ] Für den user_mgmt_service ist eine eigene PrometheusRule definiert, welche einen fachlich sinnvollen Fehlerzustand erkennt. Der ausgelöste Alert wird über Alertmanager an einen konfigurierten Benachrichtigungskanal weitergeleitet
+- [ ] Die Konfiguration des Monitoring Stacks erfolgt deklarativ über eine eigene values.yaml und befindet sich im Ops Repository
 
 ## Aufgabe 2
-- [ ] k6 ist im Kubernetes Cluster ausführbar und es ist mindestens 1 Testskript für den user_mgmt_service vorhanden
-- [ ] Das Testskript erzeugt kontrolliert steigende Last auf mindestens einen relevanten API Endpoint
-- [ ] Während des Lasttests werden die aufgezeichneten Telemetriedaten erfasst und die Auswirkungen sind in Prometheus resp. Grafana nachvollziehbar dargestellt
-- [ ] Es wird überprüft, ob der konfigurierte HPA bei steigender Last zusätzliche Service Replicas erzeugt und nach Reduktion der Last die Anzahl wieder reduziert
-- [ ] Während des Skalierungsvorgangs bleibt der user_mgmt_service verfügbar und eingehende Requests werden via vordefinierter Strategie auf die verfügbaren Replicas verteilt
+- [x] k6 ist im Kubernetes Cluster ausführbar und es ist mindestens 1 Testskript für den user_mgmt_service vorhanden
+- [x] Das Testskript erzeugt kontrolliert steigende Last auf mindestens einen relevanten API Endpoint
+- [x] Während des Lasttests werden die aufgezeichneten Telemetriedaten erfasst und die Auswirkungen sind in Prometheus resp. Grafana nachvollziehbar dargestellt
+- [x] Es wird überprüft, ob der konfigurierte HPA bei steigender Last zusätzliche Service Replicas erzeugt und nach Reduktion der Last die Anzahl wieder reduziert
+- [x] Während des Skalierungsvorgangs bleibt der user_mgmt_service verfügbar und eingehende Requests werden via vordefinierter Strategie auf die verfügbaren Replicas verteilt
 
 ## Aufgabe 3
 - [ ] Der DigitalOcean Provider ist in Terraform konfiguriert

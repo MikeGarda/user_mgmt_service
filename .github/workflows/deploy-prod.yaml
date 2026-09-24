@@ -14,7 +14,7 @@ name: Deploy Prod (GitOps)
 #      Bewusst KEIN "latest"-Tag, da sich die beiden Branch-Pipelines
 #      sonst gegenseitig ueberschreiben wuerden.
 #   2) Promotion: Der neue Tag wird per Commit in das Ops-Repo
-#      (MikeGarda/vsc-ops) geschrieben (k8s_helm/values-prod.yaml).
+#      (MikeGarda/vsc-ops) geschrieben (helm/values-prod.yaml).
 #      ArgoCD erkennt die Aenderung auf Branch "main" und rollt das
 #      neue Image automatisch in den Namespace user-mgmt-prod aus.
 #
@@ -41,7 +41,7 @@ env:
   # MODULE_IMAGE: ghcr.io/mikegarda/module_service
   OPS_REPO:       MikeGarda/vsc-ops
   OPS_BRANCH:     main
-  VALUES_PATH:    k8s_helm/values-prod.yaml
+  VALUES_PATH:    helm/values-prod.yaml
 
 jobs:
   build-and-promote:
