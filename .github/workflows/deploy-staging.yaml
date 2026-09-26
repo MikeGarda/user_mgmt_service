@@ -13,7 +13,7 @@ env:
   ENVIRONMENT:    staging
   BACKEND_IMAGE:  ghcr.io/mikegarda/user_mgmt_service-backend
   FRONTEND_IMAGE: ghcr.io/mikegarda/user_mgmt_service-frontend
-  MODULE_SERVICE_IMAGE: ghcr.io/mikegarda/user_mgmt_service-module_service
+  MODULE_SERVICE_IMAGE: ghcr.io/mikegarda/module_service
   OPS_REPO:       MikeGarda/vsc-ops
   OPS_BRANCH:     main
   VALUES_PATH:    helm/values-staging.yaml
