@@ -30,10 +30,10 @@
 - [ ] Die Managed PostgreSQL Datenbank wird mittels Terraform definiert und via Digital Ocean Provider provisioniert
 
 ## Aufgabe 5
-- [ ] Kyverno ist mittels Helm in einem dedizierten Namespace namens policy installiert
-- [ ] Es sind mindestens 3 passende ClusterPolicies implementiert
-- [ ] Ein Deployment, welches gegen eine der Policies verstösst, wird von Kyverno abgelehnt. Mittels eines absichtlich ungültigen Kubernetes Manifests wird nachgewiesen, dass das Policy Enforcement funktioniert
-- [ ] Die ClusterPolicies befinden sich deklarativ im Ops Repository
+- [x] Kyverno ist mittels Helm in einem dedizierten Namespace namens policy installiert
+- [x] Es sind mindestens 3 passende ClusterPolicies implementiert
+- [x] Ein Deployment, welches gegen eine der Policies verstösst, wird von Kyverno abgelehnt. Mittels eines absichtlich ungültigen Kubernetes Manifests wird nachgewiesen, dass das Policy Enforcement funktioniert
+- [x] Die ClusterPolicies befinden sich deklarativ im Ops Repository
 
 ## Aufgabe 6
 - [ ] Der user_mgmt_service stellt einen neuen Endpoint zur Verfügung, über welchen einem User ein Module zugewiesen werden kann
