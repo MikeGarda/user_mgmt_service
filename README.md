@@ -36,12 +36,12 @@
 - [x] Die ClusterPolicies befinden sich deklarativ im Ops Repository
 
 ## Aufgabe 6
-- [ ] Der user_mgmt_service stellt einen neuen Endpoint zur Verfügung, über welchen einem User ein Module zugewiesen werden kann
-- [ ] Vor der Zuweisung prüft der user_mgmt_service über die API des module_service, ob das angegebene Module verfügbar ist
-- [ ] Die Kommunikation zwischen dem user_mgmt_service und dem module_service erfolgt synchron via REST Client über den jeweiligen Kubernetes Service und wird durch Timeout, Retry und Circuit Breaker gegen temporäre Ausfälle abgesichert
-- [ ] Der user_mgmt_service hat keinen direkten Zugriff auf die seitens Digital Ocean verwaltete MySQL Datenbank
-- [ ] Die vollständige End-to-End-Kommunikation vom Client über den user_mgmt_service bis zum module_service funktioniert fehlerfrei. Erfolgreiche sowie fehlerhafte Modulzuweisungen werden korrekt verarbeitet und mit geeigneten HTTP Statuscodes beantwortet
-- [ ] Die seitens module_service exponierten Telemetriedaten werden mittels ServiceMonitor durch Prometheus erfasst und in einem zusätzlichen Grafana Dashboard visualisiert. Das Dashboard zeigt mindestens Request Rate, Response Time und Error Rate
-- [ ] Für den module_service sind CPU- und Memory Limits so dimensioniert, dass die Anwendung unter Last stabil betrieben werden kann (vertikale Skalierung)
-- [ ] Der module_service erfüllt die bestehenden ClusterPolicies
-- [ ] Das Deployment erfolgt über den bestehenden GitOps Prozess. Die existierende Pipeline wird erweitert, sodass auch das Image es module_service automatisch gebaut, versioniert und publiziert wird
+- [x] Der user_mgmt_service stellt einen neuen Endpoint zur Verfügung, über welchen einem User ein Module zugewiesen werden kann
+- [x] Vor der Zuweisung prüft der user_mgmt_service über die API des module_service, ob das angegebene Module verfügbar ist
+- [x] Die Kommunikation zwischen dem user_mgmt_service und dem module_service erfolgt synchron via REST Client über den jeweiligen Kubernetes Service und wird durch Timeout, Retry und Circuit Breaker gegen temporäre Ausfälle abgesichert
+- [x] Der user_mgmt_service hat keinen direkten Zugriff auf die seitens Digital Ocean verwaltete MySQL Datenbank
+- [x] Die vollständige End-to-End-Kommunikation vom Client über den user_mgmt_service bis zum module_service funktioniert fehlerfrei. Erfolgreiche sowie fehlerhafte Modulzuweisungen werden korrekt verarbeitet und mit geeigneten HTTP Statuscodes beantwortet
+- [x] Die seitens module_service exponierten Telemetriedaten werden mittels ServiceMonitor durch Prometheus erfasst und in einem zusätzlichen Grafana Dashboard visualisiert. Das Dashboard zeigt mindestens Request Rate, Response Time und Error Rate
+- [x] Für den module_service sind CPU- und Memory Limits so dimensioniert, dass die Anwendung unter Last stabil betrieben werden kann (vertikale Skalierung)
+- [x] Der module_service erfüllt die bestehenden ClusterPolicies
+- [x] Das Deployment erfolgt über den bestehenden GitOps Prozess. Die existierende Pipeline wird erweitert, sodass auch das Image es module_service automatisch gebaut, versioniert und publiziert wird
