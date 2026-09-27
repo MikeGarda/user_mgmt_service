@@ -13,7 +13,14 @@ class Base(DeclarativeBase):
 def _connect_args() -> dict[str, object]:
     settings = get_settings()
     if settings.database_url.startswith("mysql"):
-        return {"ssl_disabled": settings.mysql_ssl_disabled}
+        if settings.mysql_ssl_disabled:
+            # nur fuer lokale Entwicklung ohne TLS
+            return {"ssl_disabled": True}
+        # DigitalOcean Managed MySQL erzwingt TLS ("require_secure_transport").
+        # PyMySQL aktiviert TLS nur, wenn ein ssl-Dict uebergeben wird. Ohne
+        # CA-Datei: verschluesselt, aber ohne Zertifikatspruefung (entspricht
+        # sslmode=require bei PostgreSQL).
+        return {"ssl": {"check_hostname": False}}
     if settings.database_url.startswith("sqlite"):
         return {"check_same_thread": False}
     return {}
