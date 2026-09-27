@@ -81,7 +81,9 @@ jobs:
           cd ops
           yq -i ".images.backend.tag  = \"${TAG}\"" "${VALUES_PATH}"
           yq -i ".images.frontend.tag = \"${TAG}\"" "${VALUES_PATH}"
-          yq -i ".images.module-service.tag = \"${TAG}\"" "${VALUES_PATH}"
+          # Schluessel mit Unterstrich wie im Helm-Chart (images.module_service);
+          # "module-service" wuerde yq als Subtraktion lesen
+          yq -i ".images.module_service.tag = \"${TAG}\"" "${VALUES_PATH}"
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add "${VALUES_PATH}"
