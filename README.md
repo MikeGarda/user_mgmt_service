@@ -15,19 +15,19 @@
 - [x] Während des Skalierungsvorgangs bleibt der user_mgmt_service verfügbar und eingehende Requests werden via vordefinierter Strategie auf die verfügbaren Replicas verteilt
 
 ## Aufgabe 3
-- [ ] Der DigitalOcean Provider ist in Terraform konfiguriert
-- [ ] Der bestehende Kubernetes Cluster wird via Terraform import Blocks referenziert und mittels terraform plan -generate-config-out=generated.tf aus der bestehenden Infrastruktur generiert
-- [ ] Die automatisch erzeugte generated.tf ist analysiert und bereinigt
-- [ ] Wiederverwendbare Konfigurationswerte werden über Terraform Variablen parametrisiert
-- [ ] Sensible Werte, insbesondere der DigitalOcean API Token, befinden sich nicht im Repository
-- [ ] Terraform fmt und terraform validate laufen fehlerfrei und terraform plan zeigt für den bestehenden Cluster keine unbeabsichtigten Infrastrukturänderungen
+- [x] Der DigitalOcean Provider ist in Terraform konfiguriert
+- [x] Der bestehende Kubernetes Cluster wird via Terraform import Blocks referenziert und mittels terraform plan -generate-config-out=generated.tf aus der bestehenden Infrastruktur generiert
+- [x] Die automatisch erzeugte generated.tf ist analysiert und bereinigt
+- [x] Wiederverwendbare Konfigurationswerte werden über Terraform Variablen parametrisiert
+- [x] Sensible Werte, insbesondere der DigitalOcean API Token, befinden sich nicht im Repository
+- [x] Terraform fmt und terraform validate laufen fehlerfrei und terraform plan zeigt für den bestehenden Cluster keine unbeabsichtigten Infrastrukturänderungen
 
 ## Aufgabe 4
-- [ ] Die bisher im Kubernetes Cluster betriebene PostgreSQL Datenbank wird durch eine DigitalOcean Managed PostgreSQL Database ersetzt
-- [ ] Der user_mgmt_service verbindet sich ausschliesslich über die bereitgestellten Verbindungsdaten mit der Managed Database
-- [ ] Zugangsdaten zur Datenbank werden weiterhin über ein Kubernetes Secret bereitgestellt und nicht hardcodiert
-- [ ] Der bisherige PostgreSQL Pod, Service und PersistentVolumeClaim werden aus dem Deployment entfernt
-- [ ] Die Managed PostgreSQL Datenbank wird mittels Terraform definiert und via Digital Ocean Provider provisioniert
+- [x] Die bisher im Kubernetes Cluster betriebene PostgreSQL Datenbank wird durch eine DigitalOcean Managed PostgreSQL Database ersetzt
+- [x] Der user_mgmt_service verbindet sich ausschliesslich über die bereitgestellten Verbindungsdaten mit der Managed Database
+- [x] Zugangsdaten zur Datenbank werden weiterhin über ein Kubernetes Secret bereitgestellt und nicht hardcodiert
+- [x] Der bisherige PostgreSQL Pod, Service und PersistentVolumeClaim werden aus dem Deployment entfernt
+- [x] Die Managed PostgreSQL Datenbank wird mittels Terraform definiert und via Digital Ocean Provider provisioniert
 
 ## Aufgabe 5
 - [x] Kyverno ist mittels Helm in einem dedizierten Namespace namens policy installiert
