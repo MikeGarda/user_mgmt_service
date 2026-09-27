@@ -26,6 +26,12 @@ dependencies {
     // Version wird ueber die Spring-Boot-BOM (dependency-management-Plugin) verwaltet.
     implementation 'io.micrometer:micrometer-registry-prometheus'
     implementation group: 'org.postgresql', name: 'postgresql', version: '42.7.10'
+    // Aufgabe 6: Timeout/Retry/Circuit Breaker fuer den REST-Client zum module_service.
+    // Kernbibliotheken statt Spring-Boot-Starter (noch keiner fuer Spring Boot 4 verfuegbar).
+    implementation 'io.github.resilience4j:resilience4j-circuitbreaker:2.3.0'
+    implementation 'io.github.resilience4j:resilience4j-retry:2.3.0'
+    // Zustand von Circuit Breaker / Retry als Prometheus-Metriken
+    implementation 'io.github.resilience4j:resilience4j-micrometer:2.3.0'
     implementation group: 'commons-validator', name: 'commons-validator', version: '1.10.1'
     implementation group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.13.0'
     implementation group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.13.0'
